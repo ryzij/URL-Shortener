@@ -34,8 +34,10 @@ app.UseSwaggerUI();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    var retry = db.Database.CreateExecutionStrategy();
+    retry.Execute(db.Database.Migrate);
 }
 
 //app.UseHttpsRedirection();
