@@ -1,0 +1,85 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+publish/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.Local.json
+
+# Environment variables
+.env
+#.env.*
+
+# Logs
+logs/
+*.log
+
+# NuGet
+*.nupkg
+packages/
+!packages/build/
+
+# Entity Framework
+*.db
+*.db-shm
+*.db-wal
+
+# SQLite
+*.sqlite
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules
+node_modules/
+
+# Coverage / tests
+coverage/
+TestResults/
+
+# Docker
+docker-compose.override.yml
+
+# Generated files
+*.cache
+*.tmp
+*.temp
+
+# Publish output
+wwwroot/dist/
+wwwroot/build/
+
+# Secrets
+secrets.json
+
+# Certificates
+*.pfx
+*.pem
+*.key
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
