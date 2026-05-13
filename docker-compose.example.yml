@@ -6,10 +6,10 @@ services:
     depends_on:
       - db
     environment:
-      ConnectionStrings__DefaultConnection: Host=${DB_HOST};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      ConnectionStrings__DefaultConnection: Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
 
   db:
-    image: postgres:16
+    image: postgres:17
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
