@@ -61,6 +61,7 @@ coverage/
 TestResults/
 
 # Docker
+docker-compose.yml
 docker-compose.override.yml
 
 # Generated files
