@@ -70,6 +70,8 @@ namespace URL_Shortener.Controllers
             if (dto.ResetExpirationDateTime)
                 shortUrl.ExpirationDateTime = null;
 
+            shortUrl.UpdateDateTime = DateTime.UtcNow;
+
             await _db.SaveChangesAsync();
 
             return Ok(shortUrl);

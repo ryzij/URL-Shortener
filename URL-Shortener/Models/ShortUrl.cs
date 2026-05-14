@@ -8,6 +8,7 @@
         public string ShortCode { get; set; } = string.Empty;
         public int TotalClickCount { get; set; }
         public DateTime CreationDateTime { get; set; } = DateTime.UtcNow;
+        public DateTime UpdateDateTime { get; set; } = DateTime.UtcNow;
         public DateTime? ExpirationDateTime { get; set; } = null;
         public int ClickLimit { get; set; } = 0;
     }
