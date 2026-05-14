@@ -54,6 +54,27 @@ namespace URL_Shortener.Controllers
             return CreatedAtRoute(nameof(GetShortUrlByIdAsync), new { id = shortUrl.Id }, shortUrl);
         }
 
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> UpdateShortUrlAsync(int id, UpdateShortUrlDto dto)
+        {
+            var shortUrl = await _db.ShortUrls.FindAsync(id);
+            if (shortUrl == null)
+                return NotFound("Short URL not found");
+
+            if (!string.IsNullOrEmpty(dto.OriginalUrl))
+                shortUrl.OriginalUrl = dto.OriginalUrl;
+            if (dto.ExpirationDateTime.HasValue)
+                shortUrl.ExpirationDateTime = dto.ExpirationDateTime;
+            if (dto.ClickLimit.HasValue)
+                shortUrl.ClickLimit = dto.ClickLimit.Value;
+            if (dto.ResetExpirationDateTime)
+                shortUrl.ExpirationDateTime = null;
+
+            await _db.SaveChangesAsync();
+
+            return Ok(shortUrl);
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteShortUrlByIdAsync(int id)
         {
