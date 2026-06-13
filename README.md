@@ -43,7 +43,9 @@ cp docker-compose.example.yml docker-compose.yml
 ```yml
 services:
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: URL-Shortener/Dockerfile
     ports:
       - "5000:8080"
     depends_on:
