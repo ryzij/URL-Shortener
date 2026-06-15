@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using URL_Shortener.DTO;
 using URL_Shortener.Models;
 using HashidsNet;
+using Microsoft.AspNetCore.Authorization;
 
 namespace URL_Shortener.Controllers
 {
@@ -78,11 +79,14 @@ namespace URL_Shortener.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> DeleteShortUrlByIdAsync(int id)
         {
             var shortUrl = await _db.ShortUrls.FindAsync(id);
             if (shortUrl == null)
                 return NotFound();
+
+            // TODO: определение пользователя по jwt
 
             _db.ShortUrls.Remove(shortUrl);
 

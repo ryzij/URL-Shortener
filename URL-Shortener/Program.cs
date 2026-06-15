@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using URL_Shortener;
 using URL_Shortener.Services;
 using URL_Shortener.Settings;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +21,20 @@ builder.Services.AddSingleton<HashidsNet.Hashids>();
 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<JwtService>();
-builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
+
+var authSettings = builder.Configuration.GetSection("AuthSettings");
+builder.Services.Configure<AuthSettings>(authSettings);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(o => o.TokenValidationParameters = new()
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            authSettings.Get<AuthSettings>().SecretKey))
+    });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -47,6 +63,7 @@ using (var scope = app.Services.CreateScope())
 
 //app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
