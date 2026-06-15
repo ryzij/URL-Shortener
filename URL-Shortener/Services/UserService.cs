@@ -9,7 +9,7 @@ namespace URL_Shortener.Services
         private readonly AppDbContext _db = db;
         private readonly JwtService _jwtService = jwtService;
 
-        public async Task RegisterAsync(string userName, string email, string password, CancellationToken cancellationToken = default)
+        public async Task<string> RegisterAsync(string userName, string email, string password, CancellationToken cancellationToken = default)
         {
             if (await _db.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken) != null)
                 throw new Exception("This user already exists.");
@@ -23,6 +23,8 @@ namespace URL_Shortener.Services
 
             await _db.Users.AddAsync(user, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
+
+            return _jwtService.GenerateToken(user);
         }
 
         public async Task<string> LoginAsync(string email, string password, CancellationToken cancellationToken = default)

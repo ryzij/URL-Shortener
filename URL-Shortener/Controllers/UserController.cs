@@ -13,8 +13,8 @@ namespace URL_Shortener.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync(RegisterUserDTO dto)
         {
-            await _userService.RegisterAsync(dto.Name, dto.Email, dto.Password);
-            return Ok();
+            var jwt = await _userService.RegisterAsync(dto.Name, dto.Email, dto.Password);
+            return Ok(jwt);
         }
 
         [HttpPost("login")]
