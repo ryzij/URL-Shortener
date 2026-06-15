@@ -31,6 +31,9 @@ cp .env.example .env
 POSTGRES_USER=app
 POSTGRES_PASSWORD=app
 POSTGRES_DB=appdb
+
+JWT_SECRET_KEY=mysecretkeyqwertyuiopasdfghjklzxcvbnm
+JWT_EXPIRES=00:01:00
 ```
 
 ### Настройка `docker-compose.yml`
@@ -52,6 +55,8 @@ services:
       - db
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      AuthSettings__SecretKey: ${JWT_SECRET_KEY}
+      AuthSettings__Expires: "${JWT_EXPIRES}"
 
   db:
     image: postgres:17

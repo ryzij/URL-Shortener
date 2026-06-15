@@ -9,6 +9,8 @@ services:
       - db
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      AuthSettings__SecretKey: ${JWT_SECRET_KEY}
+      AuthSettings__Expires: "${JWT_EXPIRES}"
 
   db:
     image: postgres:17
