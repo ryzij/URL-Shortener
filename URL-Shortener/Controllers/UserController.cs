@@ -1,24 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using URL_Shortener.Models;
 using URL_Shortener.DTO;
+using URL_Shortener.Services;
 
 namespace URL_Shortener.Controllers
 {
     [ApiController]
     [Route("user")]
-    public class UserController(AppDbContext db) : ControllerBase
+    public class UserController(UserService userService) : ControllerBase
     {
-        private readonly AppDbContext _db = db;
+        private readonly UserService _userService = userService;
 
-        [HttpGet("email")]
-        public async Task<IActionResult> GetUserByEmailAsync(string email)
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync(RegisterUserDTO dto)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
-                return NotFound("User not found");
+            await _userService.RegisterAsync(dto.Name, dto.Email, dto.Password);
+            return Ok();
+        }
 
-            return Ok(user);
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(LoginUserDTO dto)
+        {
+            var jwt = await _userService.LoginAsync(dto.Email, dto.Password);
+            return Ok(jwt);
         }
     }
 }

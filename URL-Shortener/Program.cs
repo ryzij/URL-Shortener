@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using URL_Shortener;
+using URL_Shortener.Services;
+using URL_Shortener.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +14,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Чтобы короткие коды генерировать
 builder.Services.AddSingleton<HashidsNet.Hashids>();
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<JwtService>();
+builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
