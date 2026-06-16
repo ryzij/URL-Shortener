@@ -4,6 +4,7 @@ using URL_Shortener.DTO;
 using URL_Shortener.Models;
 using HashidsNet;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace URL_Shortener.Controllers
 {
@@ -86,7 +87,9 @@ namespace URL_Shortener.Controllers
             if (shortUrl == null)
                 return NotFound();
 
-            // TODO: определение пользователя по jwt
+            if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId) ||
+                shortUrl.UserId != userId)
+                throw new Exception("Not authorized");
 
             _db.ShortUrls.Remove(shortUrl);
 
