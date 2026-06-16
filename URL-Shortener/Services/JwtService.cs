@@ -14,9 +14,9 @@ namespace URL_Shortener.Services
         public string GenerateToken(User user)
         {
             var claims = new List<Claim>() {
-                new("userName", user.Name),
-                new("userEmail", user.Email),
-                new("id", user.Id.ToString())
+                new(ClaimTypes.Name, user.Name),
+                new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
             var jwt = new JwtSecurityToken(
                 expires: DateTime.UtcNow.Add(options.Value.Expires),
