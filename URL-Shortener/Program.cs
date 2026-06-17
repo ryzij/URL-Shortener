@@ -29,11 +29,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o => o.TokenValidationParameters = new()
     {
         ValidateIssuerSigningKey = true,
-        ValidateIssuer = true,
+        //ValidateIssuer = true,
         ValidateAudience = false,
         ValidateLifetime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            authSettings.Get<AuthSettings>().SecretKey))
+            authSettings.Get<AuthSettings>()!.SecretKey))
     });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
