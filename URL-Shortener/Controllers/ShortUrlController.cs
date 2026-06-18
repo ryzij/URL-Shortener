@@ -5,6 +5,7 @@ using URL_Shortener.Models;
 using HashidsNet;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using URL_Shortener.Extensions;
 
 namespace URL_Shortener.Controllers
 {
@@ -40,13 +41,15 @@ namespace URL_Shortener.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateShortUrlAsync(CreateShortUrlDto dto)
         {
             var shortUrl = new ShortUrl
             {
                 OriginalUrl = dto.OriginalUrl,
                 ExpirationDateTime = dto.ExpirationDateTime,
-                ClickLimit = dto.ClickLimit
+                ClickLimit = dto.ClickLimit,
+                UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
             };
             await _db.ShortUrls.AddAsync(shortUrl);
             await _db.SaveChangesAsync();
@@ -57,11 +60,15 @@ namespace URL_Shortener.Controllers
         }
 
         [HttpPatch("{id:int}")]
+        [Authorize]
         public async Task<IActionResult> UpdateShortUrlAsync(int id, UpdateShortUrlDto dto)
         {
             var shortUrl = await _db.ShortUrls.FindAsync(id);
             if (shortUrl == null)
                 return NotFound("Short URL not found");
+
+            if (!User.CompareId(shortUrl.UserId))
+                throw new Exception("Not authorized");
 
             if (!string.IsNullOrEmpty(dto.OriginalUrl))
                 shortUrl.OriginalUrl = dto.OriginalUrl;
@@ -87,8 +94,7 @@ namespace URL_Shortener.Controllers
             if (shortUrl == null)
                 return NotFound();
 
-            if (!int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId) ||
-                shortUrl.UserId != userId)
+            if (!User.CompareId(shortUrl.UserId))
                 throw new Exception("Not authorized");
 
             _db.ShortUrls.Remove(shortUrl);

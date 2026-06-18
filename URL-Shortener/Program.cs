@@ -4,6 +4,7 @@ using URL_Shortener;
 using URL_Shortener.Services;
 using URL_Shortener.Settings;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +16,21 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
+});
 
 builder.Services.AddSingleton<HashidsNet.Hashids>();
 
@@ -29,8 +44,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o => o.TokenValidationParameters = new()
     {
         ValidateIssuerSigningKey = true,
-        //ValidateIssuer = true,
         ValidateAudience = false,
+        ValidateIssuer = false,
         ValidateLifetime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             authSettings.Get<AuthSettings>()!.SecretKey))
@@ -60,8 +75,6 @@ using (var scope = app.Services.CreateScope())
     var retry = db.Database.CreateExecutionStrategy();
     retry.Execute(db.Database.Migrate);
 }
-
-//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
